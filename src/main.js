@@ -43,7 +43,15 @@ form.addEventListener('submit', async event => {
 
     createGallery(data.hits);
 
-    if (totalHits > 15) {
+    const totalPages = Math.ceil(totalHits / 15);
+
+    if (page >= totalPages) {
+      hideLoadMoreButton();
+      iziToast.info({
+        message: "We're sorry, but you've reached the end of search results.",
+        position: 'bottomCenter',
+      });
+    } else {
       showLoadMoreButton();
     }
   } catch (error) {
@@ -79,6 +87,18 @@ loadMoreBtn.addEventListener('click', async () => {
     iziToast.error({ message: 'Error loading more images!' });
   } finally {
     hideLoader();
+  }
+
+  const totalPages = Math.ceil(totalHits / 15);
+
+  if (totalPages > 0 && page >= totalPages) {
+    hideLoadMoreButton();
+    iziToast.info({
+      message: "We're sorry, but you've reached the end of search results.",
+      position: 'bottomCenter',
+    });
+  } else if (totalPages > 1) {
+    showLoadMoreButton();
   }
 });
 
