@@ -59,7 +59,6 @@ form.addEventListener('submit', async event => {
     iziToast.error({ message: 'Something went wrong!' });
   } finally {
     hideLoader();
-    form.reset();
   }
 });
 
@@ -71,34 +70,25 @@ loadMoreBtn.addEventListener('click', async () => {
   try {
     const data = await getImagesByQuery(searchQuery, page);
     createGallery(data.hits);
-
     smoothScroll();
 
     const totalPages = Math.ceil(totalHits / 15);
+
     if (page >= totalPages) {
       hideLoadMoreButton();
       iziToast.info({
         message: "We're sorry, but you've reached the end of search results.",
+        position: 'bottomCenter',
       });
     } else {
       showLoadMoreButton();
     }
   } catch (error) {
+    console.error(error);
     iziToast.error({ message: 'Error loading more images!' });
+    showLoadMoreButton();
   } finally {
     hideLoader();
-  }
-
-  const totalPages = Math.ceil(totalHits / 15);
-
-  if (totalPages > 0 && page >= totalPages) {
-    hideLoadMoreButton();
-    iziToast.info({
-      message: "We're sorry, but you've reached the end of search results.",
-      position: 'bottomCenter',
-    });
-  } else if (totalPages > 1) {
-    showLoadMoreButton();
   }
 });
 
